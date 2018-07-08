@@ -82,6 +82,28 @@ bool load_resources()
     log("%s is compiled in\n", file_to_load);
     yodesk_data = &yodesk_bin;
     yodesk_size = yodesk_bin_size;
+#elif defined __vita__
+    file_to_load = "ux0:/data/yoda/YODESK.DTA";
+    SceUID yodesk_fd = sceIoOpen(file_to_load, SCE_O_RDONLY, 0777);
+    if(yodesk_fd < 0) {
+      log("Failed to load '%s'!\n", file_to_load);
+      return false;
+    }
+
+    SceIoStat stat;
+    if (sceIoGetstatByFd(yodesk_fd, &stat) < 0) {
+      log("Failed to get size of '%s'!\n", file_to_load);
+      return false;
+    }
+    yodesk_size = stat.st_size;
+    log("Reading %s to RAM...\n", file_to_load);
+    yodesk_data = malloc(yodesk_size);
+
+    int bytes_read;
+    if ((bytes_read=sceIoRead(yodesk_fd, yodesk_data, yodesk_size)) != yodesk_size) {
+      log("only %d/%d bytes read to RAM!!\n", bytes_read, yodesk_size);
+    }
+    sceIoClose(yodesk_fd);
 #else
     yodesk_fileptr = fopen(file_to_load, "rb");
 

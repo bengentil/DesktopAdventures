@@ -22,7 +22,13 @@
 #include <stddef.h>
 
 #ifdef RENDER_GL
+#ifdef PC_BUILD
+    #include <SDL_opengl.h>
+#elif defined __vita__
+    #include <vitaGL.h>
+#else
     #include <GL/gl.h>
+#endif
     GLuint texture[0x2001];
 #endif
 

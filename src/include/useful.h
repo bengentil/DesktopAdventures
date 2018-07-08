@@ -98,6 +98,51 @@
         return 0;
     }
     #define random_val() 1 //https://xkcd.com/221 (TODO)
+#elif defined __vita__
+    #include <psp2/types.h>
+    #include <psp2/kernel/threadmgr.h>
+    #include <psp2/net/net.h>
+    #include <psp2/io/fcntl.h>
+    #include <psp2/kernel/rng.h>
+    #include <stdarg.h>
+    #include <string.h>
+    #include <malloc.h>
+    
+    typedef SceUInt8 u8;
+    typedef SceUInt16 u16;
+    typedef SceUInt32 u32;
+    typedef SceUInt64 u64;
+
+    typedef SceInt8 s8;
+    typedef SceInt16 s16;
+    typedef SceInt32 s32;
+    typedef SceInt64 s64;
+
+    typedef volatile u8 vu8;
+    typedef volatile u16 vu16;
+    typedef volatile u32 vu32;
+    typedef volatile u64 vu64;
+
+    typedef volatile s8 vs8;
+    typedef volatile s16 vs16;
+    typedef volatile s32 vs32;
+    typedef volatile s64 vs64;
+
+    #define bool u8
+    #define true 1
+    #define false 0
+    #define BIT(n) (1<<n)
+
+    #define usleep sceKernelDelayThread
+
+    #ifdef VITA_NET_DEBUG
+    #define log(f_, ...) net_send((f_), __VA_ARGS__)
+    void net_send(const char *fmt, ...);
+    #else
+    #define log(f_, ...)
+    #endif
+
+    u32 random_val();
 #endif
 
 #ifdef __EMSCRIPTEN__

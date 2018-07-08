@@ -1,4 +1,5 @@
 build/*
+src/vita/build/*
 src/3ds/build/*
 src/3ds/*.3dsx
 src/3ds/*.elf
